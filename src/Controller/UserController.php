@@ -21,6 +21,38 @@ class UserController extends AbstractController
       {
           $this->security = $security;
       }
+
+    /**
+     * @Route("/{id}/driver", name="driver_action", methods="GET|POST")
+     */
+    public function driverAction($id)
+    {
+        if ($this->security->isGranted('ROLE_ADMIN')) {
+            //Get the enity manager
+            $em = $this->getDoctrine()->getManager();
+            //Get the user with name admin
+            $user = $em->getRepository("App:User")->find($id);
+            if ($user) {
+                if (in_array("ROLE_DRIVER", $user->getRoles())) {
+                    $user->removeRole("ROLE_DRIVER");
+                } else {
+                    //Set the admin role
+                    $user->addRole("ROLE_DRIVER");
+                    //$user->removeRole("ROLE_USER");
+                }
+                //Save it to the database
+                $em->persist($user);
+                $em->flush();
+            }
+            $users = $em->getRepository('App:User')->findAll();
+
+            return $this->render('user/index.html.twig', [
+                'users' => $users,
+            ]);
+        } else {
+            return $this->render('message/noAccess.html.twig');
+        }
+    }
     /**
      * @Route("/", name="user_index", methods={"GET"})
      */
