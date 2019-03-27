@@ -9,12 +9,20 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Security\Core\Security;
+
 
 /**
  * @Route("/truck")
  */
 class TruckController extends AbstractController
 {
+    private $security;
+
+    public function __construct(Security $security)
+    {
+        $this->security = $security;
+    }
     /**
      * @Route("/", name="truck_index", methods={"GET"})
      */
@@ -30,6 +38,10 @@ class TruckController extends AbstractController
      */
     public function new(Request $request): Response
     {
+        if (!$this->security->isGranted('ROLE_ADMIN')) {
+            return $this->render('default/noaccess.html.twig');
+        }
+
         $truck = new Truck();
         $form = $this->createForm(TruckType::class, $truck);
         $form->handleRequest($request);
@@ -63,6 +75,10 @@ class TruckController extends AbstractController
      */
     public function edit(Request $request, Truck $truck): Response
     {
+        if (!$this->security->isGranted('ROLE_ADMIN')) {
+            return $this->render('default/noaccess.html.twig');
+        }
+
         $form = $this->createForm(TruckType::class, $truck);
         $form->handleRequest($request);
 
@@ -85,6 +101,10 @@ class TruckController extends AbstractController
      */
     public function delete(Request $request, Truck $truck): Response
     {
+        if (!$this->security->isGranted('ROLE_ADMIN')) {
+            return $this->render('default/noaccess.html.twig');
+        }
+
         if ($this->isCsrfTokenValid('delete'.$truck->getId(), $request->request->get('_token'))) {
             $entityManager = $this->getDoctrine()->getManager();
             $entityManager->remove($truck);

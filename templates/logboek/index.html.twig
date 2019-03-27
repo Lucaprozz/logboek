@@ -32,7 +32,9 @@
                 <td>{{ logboek.evenement }}</td>
                 <td>
                     <a href="{{ path('logboek_show', {'id': logboek.id}) }}">show</a>
+                    {% if is_granted('ROLE_ADMIN') %}
                     <a href="{{ path('logboek_edit', {'id': logboek.id}) }}">edit</a>
+                    {% endif %}
                 </td>
             </tr>
         {% else %}
@@ -42,6 +44,7 @@
         {% endfor %}
         </tbody>
     </table>
-
+    {% if is_granted('ROLE_ADMIN') %}
     <a href="{{ path('logboek_new') }}">Create new</a>
+    {% endif %}
 {% endblock %}

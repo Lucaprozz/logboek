@@ -40,7 +40,7 @@ class LogboekController extends AbstractController
     public function new(Request $request): Response
     {
         if (!$this->security->isGranted('ROLE_ADMIN')) {
-            return $this->redirectToRoute('default');
+            return $this->render('default');
         }
 
         $logboek = new Logboek();
@@ -77,7 +77,7 @@ class LogboekController extends AbstractController
     public function edit(Request $request, Logboek $logboek): Response
     {
         if (!$this->security->isGranted('ROLE_ADMIN')) {
-            return $this->redirectToRoute('default');
+            $this->render('default');
         }
 
         $form = $this->createForm(LogboekType::class, $logboek);

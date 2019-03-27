@@ -27,8 +27,9 @@
     </table>
 
     <a href="{{ path('truck_index') }}">back to list</a>
-
+    {% if is_granted('ROLE_ADMIN') %}
     <a href="{{ path('truck_edit', {'id': truck.id}) }}">edit</a>
+    {% endif %}
 
     {{ include('truck/_delete_form.html.twig') }}
 {% endblock %}
